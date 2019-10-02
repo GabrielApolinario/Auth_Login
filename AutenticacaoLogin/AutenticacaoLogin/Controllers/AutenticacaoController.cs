@@ -27,6 +27,15 @@ namespace AutenticacaoLogin.Controllers
             {   //Se não forem, retorna para a viewmodel
                 return View(viewmodel);
             }
+            
+                //Contando se dentro do banco já existe algum login igual ao que está se cadastrando
+            if (db.Conexao.Count (u => u.Login == viewmodel.Login) > 0)
+            {
+                //Vincula esse modelo de erro ao 'Login'
+                ModelState.AddModelError("Login","Já existe um usuário com este login");
+                return View(viewmodel);
+            }
+            
             //Instancia novo usuario
             Usuario novoUsuario = new Usuario
             {
@@ -45,5 +54,16 @@ namespace AutenticacaoLogin.Controllers
             //Redireciona para a Action Index do controlador Home
             return RedirectToAction("Index", "Home");
         }
+
+        public ActionResult Login (string ReturnUrl)
+        {
+            var viewmodel = new LoginViewModel
+            {
+                UrlRetorno = ReturnUrl
+            };
+
+            return View(viewmodel);
+        }
+
     }
 }
